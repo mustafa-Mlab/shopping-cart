@@ -1,0 +1,15 @@
+a.add-to-cart {
+  display: block;
+  padding: 11px 10px;
+  background: #ec2150;
+  color: #fff;
+  text-align: center;
+  font-size: 18px;
+  line-height: 1.5;
+  text-transform: uppercase;
+  font-weight: 700;
+  border-radius: 9px;
+}
+.add-to-cart:hover {
+  background: #8c0e2b;
+}

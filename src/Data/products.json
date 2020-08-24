@@ -1,0 +1,90 @@
+{
+  "total_products" : 6,
+  "data" : [
+    {
+      "id" : 1,
+      "title": "denim jeans",
+      "size" : {"xxl": 2, "xl" : 2, "m": 1, "s": 6},
+      "price" : 120,
+      "sell_price": 100,
+      "quantity" : 11,
+      "color" : {"blue": 2, "washed-blue": 8, "black": 1},
+      "sku" : "den-11-2020-free",
+      "description": "This is demo products from Denim, very good product",
+      "available_sizes": ["s", "m", "xl", "xxl"],
+      "image" : "https://images-na.ssl-images-amazon.com/images/G/01/AMAZON_FASHION/2018/DNAV/PHASE_5/M_DENIM/4_Desktop._CB474748394_.jpg",
+      "in_stoke" : true
+    },
+    {
+      "id" : 2,
+      "title": "Puma jeans",
+      "size" : {"xxl": 2, "xl" : 2, "m": 1, "s": 6},
+      "price" : 180,
+      "sell_price": 150,
+      "quantity" : 11,
+      "color" : {"blue": 2, "washed-blue": 8, "black": 1},
+      "sku" : "den-11-2020-free",
+      "description": "This is demo products from Denim, very good product",
+      "available_sizes": ["s", "m", "xl", "xxl"],
+      "image" : "https://images-na.ssl-images-amazon.com/images/G/01/AMAZON_FASHION/2018/DNAV/PHASE_5/M_DENIM/4_Desktop._CB474748394_.jpg",
+      "in_stoke" : true
+    },
+    {
+      "id" : 3,
+      "title": "Deshi genji",
+      "size" : {"xxl": 2, "xl" : 2, "m": 1, "s": 6},
+      "price" : 300,
+      "sell_price": 250,
+      "quantity" : 11,
+      "color" : {"blue": 2, "washed-blue": 8, "black": 1},
+      "sku" : "den-11-2020-free",
+      "description": "This is demo products from Denim, very good product",
+      "available_sizes": ["s", "m", "xl", "xxl"],
+      "image" : "https://images-na.ssl-images-amazon.com/images/G/01/AMAZON_FASHION/2018/DNAV/PHASE_5/M_DENIM/4_Desktop._CB474748394_.jpg",
+      "in_stoke" : true
+    },    
+    {
+      "id" : 4,
+      "title": "B-Deshi genji",
+      "size" : {"xxl": 2, "xl" : 2, "m": 1, "s": 6},
+      "price" : 300,
+      "sell_price": 250,
+      "quantity" : 11,
+      "color" : {"blue": 2, "washed-blue": 8, "black": 1},
+      "sku" : "den-11-2020-free",
+      "description": "This is demo products from Denim, very good product",
+      "available_sizes": ["s", "m", "xl", "xxl"],
+      "image" : "https://images-na.ssl-images-amazon.com/images/G/01/AMAZON_FASHION/2018/DNAV/PHASE_5/M_DENIM/4_Desktop._CB474748394_.jpg",
+      "in_stoke" : true
+    },    
+    {
+      "id" : 5,
+      "title": "Pakistani sharee",
+      "size" : {"xxl": 2, "xl" : 2, "m": 1, "s": 6},
+      "price" : 300,
+      "sell_price": 250,
+      "quantity" : 11,
+      "color" : {"blue": 2, "washed-blue": 8, "black": 1},
+      "sku" : "den-11-2020-free",
+      "description": "This is demo products from Denim, very good product",
+      "available_sizes": ["s", "m", "xl", "xxl"],
+      "image" : "https://images-na.ssl-images-amazon.com/images/G/01/AMAZON_FASHION/2018/DNAV/PHASE_5/M_DENIM/4_Desktop._CB474748394_.jpg",
+      "in_stoke" : true
+    },    
+    {
+      "id" : 6,
+      "title": "American Lungi",
+      "size" : {"xxl": 2, "xl" : 2, "m": 1, "s": 6},
+      "price" : 300,
+      "sell_price": 250,
+      "quantity" : 11,
+      "color" : {"blue": 2, "washed-blue": 8, "black": 1},
+      "sku" : "den-11-2020-free",
+      "description": "This is demo products from Denim, very good product",
+      "available_sizes": ["s", "m", "xl", "xxl"],
+      "image" : "https://images-na.ssl-images-amazon.com/images/G/01/AMAZON_FASHION/2018/DNAV/PHASE_5/M_DENIM/4_Desktop._CB474748394_.jpg",
+      "in_stoke" : true
+    }
+  ]
+  
+}

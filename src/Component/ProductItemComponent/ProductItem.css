@@ -1,0 +1,30 @@
+
+.products .item{
+  margin-bottom: 50px;
+}
+.item .image {
+  /* min-height: 300px; */
+  /* max-height: 500px; */
+  height: 350px;
+  background: #ccc;
+  margin-bottom: 30px;
+}
+h1.product-title {
+  font-size: 22px;
+  text-align: center;
+  text-transform: uppercase;
+  line-height: 1.5;
+}
+
+span.regular-price {
+  font-size: 12px;
+  text-decoration: line-through;
+  padding: 10px 16px 10px 0px;
+  display: inline-block;
+}
+
+span.sell-price {
+  font-size: 16px;
+  padding: 10px 16px 10px 0px;
+  display: inline-block;
+}

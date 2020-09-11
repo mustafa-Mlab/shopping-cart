@@ -3,14 +3,13 @@ import './ProductItem.css';
 
 import AddToCartButtonComponent from '../AddToCartButtonComponent/AddToCartButtonComponent'
 
+import {CartConsumer} from '../../Providers/CartContext/CartContext'
+
+
 class ProductItemComponent extends Component{
-  // constructor(props){
-  //   console.log(this);
-  //   console.log(props);
-  // }
+
   render(){
-    // console.log(this.props);
-    const { id, title, size, price, sell_price, available_sizes, color, description, image, quantity,  } = this.props.product
+    const { id, title, size, price, sell_price, available_sizes, color, description, image, quantity  } = this.props.product
     return(
     <div className="item col-md-4" data-id={id}>
       <div className="image">
@@ -22,11 +21,11 @@ class ProductItemComponent extends Component{
           <span className="col-md-6 regular-price">{price}$</span>
           <span className="col-md-6 sell-price text-right">{sell_price}$</span>
         </div>
-        <AddToCartButtonComponent product_id={id} />
-        
+        <CartConsumer>
+          <AddToCartButtonComponent product_id={id}  />
+        </CartConsumer>
       </div>
     </div>
-    // <h1>{ProductTitle}</h1>
     );
   }
 }

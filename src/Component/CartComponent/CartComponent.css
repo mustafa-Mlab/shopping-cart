@@ -1,0 +1,20 @@
+.quantity h5{
+position: relative;
+} 
+.quantity h5 .unit-count{
+  position: relative;
+}
+.quantity span.qup-icon{
+  position: absolute;
+  top: 0;
+}
+.quantity span.qdown-icon{
+  position: absolute;
+  top: 10px;
+  height: 7px;
+}
+.up-down-icon {
+  position: relative;
+  top: -4px;
+  height: 7px;
+}

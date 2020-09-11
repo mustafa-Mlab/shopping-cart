@@ -26,4 +26,9 @@ a.menu-link:hover{
   color: pink;
   text-decoration: none;
 }
-
+.mb30{
+  margin-bottom: 30px;
+}
+.cart{
+  border: 1px solid green;
+}

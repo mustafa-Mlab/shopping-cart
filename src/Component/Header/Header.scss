@@ -138,15 +138,31 @@
   }
 }
 
+.user-dropdown-container {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 90;
+  background: transparent;
+}
+
 .user-nav {
   display: flex;
   align-items: center;
   gap: 8px;
   cursor: pointer;
-  padding: 6px 12px;
+  padding: 8px 14px;
   background: rgba(0, 0, 0, 0.03);
   border-radius: var(--radius-md);
   transition: var(--transition);
+  user-select: none;
 
   .user-icon {
     width: 18px;
@@ -155,14 +171,108 @@
   }
 
   .user-name {
-    font-weight: 600;
+    font-weight: 700;
     font-size: 0.95rem;
+    color: hsl(var(--text-main));
+  }
+
+  .caret-icon {
+    width: 14px;
+    height: 14px;
+    color: hsl(var(--text-muted));
+    transition: transform 0.2s ease;
+    
+    &.open {
+      transform: rotate(180deg);
+    }
   }
 
   &:hover {
     background: rgba(0, 0, 0, 0.06);
   }
 }
+
+.user-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: 220px;
+  padding: 10px;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: hsl(var(--surface));
+  list-style: none;
+  z-index: 100;
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  animation: dropdownFadeIn 0.2s ease;
+
+  li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: hsl(var(--text-muted));
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: var(--transition);
+
+    .menu-svg-icon {
+      width: 18px;
+      height: 18px;
+      color: hsl(var(--text-muted));
+      transition: var(--transition);
+    }
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.03);
+      color: hsl(var(--text-main));
+
+      .menu-svg-icon {
+        color: hsl(var(--text-main));
+      }
+    }
+
+    &.logout-item {
+      color: #ef4444;
+
+      .menu-svg-icon {
+        color: #ef4444;
+      }
+
+      &:hover {
+        background: #fef2f2;
+      }
+    }
+  }
+
+  .menu-divider {
+    height: 1px;
+    background-color: hsl(var(--border-color));
+    margin: 6px 0;
+    padding: 0;
+    cursor: default;
+    &:hover {
+      background-color: hsl(var(--border-color));
+    }
+  }
+}
+
+@keyframes dropdownFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 
 .cart-badge-container {
   position: relative;

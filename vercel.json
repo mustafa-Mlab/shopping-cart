@@ -2,7 +2,7 @@
   "cleanUrls": true,
   "rewrites": [
     {
-      "source": "/((?!build/|sc-logo.jpg|favicon.ico|manifest.json|robots.txt).*)",
+      "source": "/:path*",
       "destination": "/index.html"
     }
   ]

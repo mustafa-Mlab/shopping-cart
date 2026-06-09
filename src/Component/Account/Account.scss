@@ -1,0 +1,242 @@
+.account-page {
+  margin-top: 30px;
+}
+
+.account-layout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 30px;
+  align-items: flex-start;
+}
+
+.profile-sidebar {
+  padding: 32px 24px;
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: hsl(var(--surface));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+
+  .avatar-container {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--accent)));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+    box-shadow: 0 8px 20px -5px rgba(244, 63, 94, 0.3);
+
+    .avatar-initials {
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: hsl(var(--text-inverse));
+      letter-spacing: 0.05em;
+    }
+  }
+
+  .profile-name {
+    font-size: 1.3rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-bottom: 4px;
+  }
+
+  .profile-email {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: hsl(var(--text-muted));
+    margin-bottom: 24px;
+  }
+
+  .profile-divider {
+    height: 1px;
+    width: 100%;
+    background-color: hsl(var(--border-color));
+    margin-bottom: 24px;
+  }
+
+  .profile-details {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 32px;
+
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.88rem;
+      font-weight: 600;
+
+      .label {
+        color: hsl(var(--text-muted));
+      }
+
+      .value {
+        color: hsl(var(--text-main));
+        font-weight: 700;
+        
+        &.active {
+          color: #10b981;
+        }
+      }
+    }
+  }
+
+  .btn-logout {
+    width: 100%;
+    height: 44px;
+    font-size: 0.95rem;
+
+    &:hover {
+      background-color: #fef2f2;
+      color: #ef4444;
+      border-color: #fee2e2;
+    }
+  }
+}
+
+.orders-history-section {
+  padding: 32px;
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: hsl(var(--surface));
+
+  h3 {
+    font-size: 1.25rem;
+    font-weight: 800;
+    margin-bottom: 24px;
+    border-bottom: 1.5px solid hsl(var(--border-color));
+    padding-bottom: 12px;
+  }
+}
+
+.no-orders {
+  padding: 48px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+
+  .no-orders-icon {
+    width: 48px;
+    height: 48px;
+    color: hsl(var(--text-muted));
+    opacity: 0.5;
+  }
+
+  h4 {
+    font-size: 1.15rem;
+    font-weight: 700;
+  }
+
+  p {
+    color: hsl(var(--text-muted));
+    font-size: 0.9rem;
+    margin-bottom: 12px;
+  }
+}
+
+.orders-table-wrapper {
+  overflow-x: auto;
+}
+
+.orders-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.95rem;
+
+  th {
+    padding: 12px 16px;
+    font-weight: 700;
+    color: hsl(var(--text-muted));
+    border-bottom: 1.5px solid hsl(var(--border-color));
+    text-transform: uppercase;
+    font-size: 0.78rem;
+    letter-spacing: 0.05em;
+  }
+
+  td {
+    padding: 16px;
+    border-bottom: 1px solid hsl(var(--border-color));
+    font-weight: 600;
+    color: hsl(var(--text-main));
+    vertical-align: middle;
+  }
+
+  tr:last-child td {
+    border-bottom: none;
+  }
+
+  .order-id-cell {
+    font-family: monospace;
+    font-size: 0.95rem;
+    color: hsl(var(--accent));
+  }
+
+  .order-total-cell {
+    font-weight: 700;
+  }
+
+  .status-badge {
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 4px 8px;
+    border-radius: var(--radius-sm);
+    display: inline-block;
+
+    &.status-ordered {
+      background: #eff6ff;
+      color: #3b82f6;
+    }
+    &.status-processing {
+      background: #fffbeb;
+      color: #d97706;
+    }
+    &.status-shipped {
+      background: #f5f3ff;
+      color: #7c3aed;
+    }
+    &.status-delivered {
+      background: #ecfdf5;
+      color: #10b981;
+    }
+  }
+
+  .btn-track {
+    padding: 6px 14px;
+    font-size: 0.85rem;
+    height: 32px;
+    border-radius: var(--radius-md);
+  }
+}
+
+.not-logged-in-container {
+  padding: 100px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+
+  h2 {
+    font-size: 1.8rem;
+    font-weight: 800;
+  }
+
+  p {
+    color: hsl(var(--text-muted));
+    font-size: 1.05rem;
+    margin-bottom: 8px;
+  }
+}
+
+@media (max-width: 768px) {
+  .account-layout {
+    grid-template-columns: 1fr;
+  }
+}

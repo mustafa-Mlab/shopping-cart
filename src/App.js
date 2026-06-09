@@ -12,6 +12,7 @@ import ThankYou from './Component/ThankYou/ThankYou';
 import Login from './Component/Login/Login';
 import Account from './Component/Account/Account';
 import OrderTracking from './Component/OrderTracking/OrderTracking';
+import ReviewsDashboard from './Component/Reviews/ReviewsDashboard';
 
 class App extends Component {
   constructor(props) {
@@ -21,12 +22,16 @@ class App extends Component {
     const savedCart = JSON.parse(localStorage.getItem('cart') || '[]');
     const savedUser = JSON.parse(localStorage.getItem('user') || 'null');
     const savedOrders = JSON.parse(localStorage.getItem('orders') || '[]');
+    const savedReviews = JSON.parse(localStorage.getItem('reviews') || '[]');
+    const savedQuestions = JSON.parse(localStorage.getItem('questions') || '[]');
 
     this.state = {
       products: ProductData.data,
       cart: savedCart,
       user: savedUser,
       orders: savedOrders,
+      reviews: savedReviews,
+      questions: savedQuestions,
       searchQuery: '',
       currentRoute: 'home',
       routeParams: {},
@@ -45,14 +50,17 @@ class App extends Component {
 
   // Parse location hash and set routing state
   handleHashChange = () => {
-    const hash = window.location.hash || '#/';
+    const hash = window.location.hash || '';
     
-    // Simple Router Regex Matching
-    if (hash === '#/' || hash === '') {
+    // Simple Router Matching
+    if (hash === '#/' || hash === '' || hash === '#') {
       this.setState({ currentRoute: 'home', routeParams: {} });
     } else if (hash.startsWith('#/product/')) {
       const id = hash.replace('#/product/', '');
       this.setState({ currentRoute: 'product', routeParams: { id } });
+    } else if (hash.startsWith('#/category/')) {
+      const category = hash.replace('#/category/', '');
+      this.setState({ currentRoute: 'home', routeParams: { category } });
     } else if (hash === '#/cart') {
       this.setState({ currentRoute: 'cart', routeParams: {} });
     } else if (hash === '#/checkout') {
@@ -64,6 +72,8 @@ class App extends Component {
       this.setState({ currentRoute: 'login', routeParams: {} });
     } else if (hash === '#/account') {
       this.setState({ currentRoute: 'account', routeParams: {} });
+    } else if (hash === '#/reviews') {
+      this.setState({ currentRoute: 'reviews', routeParams: {} });
     } else if (hash.startsWith('#/track/')) {
       const orderId = hash.replace('#/track/', '');
       this.setState({ currentRoute: 'track', routeParams: { orderId } });
@@ -78,10 +88,17 @@ class App extends Component {
     window.scrollTo(0, 0);
   };
 
-  // Trigger page updates via hash changes
+  // Trigger page updates via hash changes with clean URL fallback
   navigate = (path) => {
     if (path === 'home') {
-      window.location.hash = '#/';
+      // Clear hash cleanly from URL without page reload
+      window.location.hash = '';
+      window.history.pushState(
+        "", 
+        document.title, 
+        window.location.pathname + window.location.search
+      );
+      this.setState({ currentRoute: 'home', routeParams: {} });
     } else {
       window.location.hash = `#/${path}`;
     }
@@ -103,6 +120,16 @@ class App extends Component {
     localStorage.setItem('orders', JSON.stringify(orders));
   };
 
+  saveReviewsToStorage = (reviews) => {
+    this.setState({ reviews });
+    localStorage.setItem('reviews', JSON.stringify(reviews));
+  };
+
+  saveQuestionsToStorage = (questions) => {
+    this.setState({ questions });
+    localStorage.setItem('questions', JSON.stringify(questions));
+  };
+
   // Cart Handlers
   handleAddToCart = (product, quantity, selectedSize, selectedColor) => {
     const { cart } = this.state;
@@ -122,8 +149,6 @@ class App extends Component {
     }
 
     this.saveCartToStorage(updatedCart);
-    
-    // Automatically redirect to cart to see items
     this.navigate('cart');
   };
 
@@ -154,7 +179,6 @@ class App extends Component {
 
   // Checkout and Order Placement
   handlePlaceOrder = (orderDetails) => {
-    // Generate Order ID & Timestamp
     const orderId = 'ORD-' + Math.floor(100000 + Math.random() * 900000);
     const orderDate = new Date().toLocaleDateString('en-US', {
       year: 'numeric',
@@ -166,26 +190,36 @@ class App extends Component {
       ...orderDetails,
       id: orderId,
       date: orderDate,
-      createdAt: Date.now(), // Timestamp for simulating real-time tracking progress
+      createdAt: Date.now(), 
       status: 'ordered',
     };
 
     const updatedOrders = [newOrder, ...this.state.orders];
     this.saveOrdersToStorage(updatedOrders);
-
-    // Clear Cart
     this.saveCartToStorage([]);
-
-    // Redirect to ThankYou page
     this.navigate(`thankyou/${orderId}`);
   };
 
-  // Real-time Status Simulator: Status changes based on time elapsed since creation
+  // Simulate instant delivery for testing review features
+  handleSimulateDelivery = (orderId) => {
+    const updatedOrders = this.state.orders.map((order) => {
+      if (order.id === orderId) {
+        return { ...order, status: 'delivered' };
+      }
+      return order;
+    });
+    this.saveOrdersToStorage(updatedOrders);
+  };
+
+  // Simulated real-time delivery tracker updates (time triggers)
   getSimulatedOrders = () => {
     const { orders } = this.state;
     let modified = false;
 
     const simulatedOrders = orders.map((order) => {
+      // If manually marked delivered, do not override it
+      if (order.status === 'delivered') return order;
+
       const elapsedMs = Date.now() - order.createdAt;
       let newStatus = 'ordered';
 
@@ -205,7 +239,6 @@ class App extends Component {
     });
 
     if (modified) {
-      // Async update to avoid triggering updates in render loop
       setTimeout(() => {
         this.saveOrdersToStorage(simulatedOrders);
       }, 0);
@@ -214,14 +247,49 @@ class App extends Component {
     return simulatedOrders;
   };
 
+  // Product Q&A Callback Handler
+  handleAddQuestion = (productId, questionText) => {
+    const { questions } = this.state;
+    const newQuestion = {
+      productId: parseInt(productId),
+      text: questionText,
+      date: new Date().toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+      }),
+    };
+    const updatedQuestions = [newQuestion, ...questions];
+    this.saveQuestionsToStorage(updatedQuestions);
+  };
+
+  // Product Review Callback Handler
+  handleAddReview = (productId, orderId, rating, comment) => {
+    const { reviews } = this.state;
+    const newReview = {
+      productId: parseInt(productId),
+      orderId: orderId,
+      rating: parseInt(rating),
+      comment: comment,
+      reviewerName: this.state.user ? this.state.user.name : 'Verified Customer',
+      date: new Date().toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+      }),
+    };
+    const updatedReviews = [newReview, ...reviews];
+    this.saveReviewsToStorage(updatedReviews);
+  };
+
   // Search Products Handler
   searchProducts = (query) => {
     this.setState({ searchQuery: query });
   };
 
   renderPage = () => {
-    const { currentRoute, routeParams, products, cart, user, searchQuery } = this.state;
-    const orders = this.getSimulatedOrders(); // Use order simulator
+    const { currentRoute, routeParams, products, cart, user, searchQuery, reviews, questions } = this.state;
+    const orders = this.getSimulatedOrders(); // Use simulator
 
     switch (currentRoute) {
       case 'home':
@@ -229,6 +297,7 @@ class App extends Component {
           <ProductList
             products={products}
             searchQuery={searchQuery}
+            selectedCategory={routeParams.category || 'all'}
             onAddToCart={this.handleAddToCart}
             navigate={this.navigate}
           />
@@ -238,7 +307,10 @@ class App extends Component {
           <ProductSingle
             productId={routeParams.id}
             products={products}
+            questions={questions.filter((q) => q.productId === parseInt(routeParams.id))}
+            reviews={reviews.filter((r) => r.productId === parseInt(routeParams.id))}
             onAddToCart={this.handleAddToCart}
+            onAddQuestion={this.handleAddQuestion}
             navigate={this.navigate}
           />
         );
@@ -284,11 +356,22 @@ class App extends Component {
             navigate={this.navigate}
           />
         );
+      case 'reviews':
+        return (
+          <ReviewsDashboard
+            user={user}
+            orders={orders}
+            reviews={reviews}
+            onAddReview={this.handleAddReview}
+            navigate={this.navigate}
+          />
+        );
       case 'track':
         return (
           <OrderTracking
             orderId={routeParams.orderId}
             orders={orders}
+            onSimulateDelivery={this.handleSimulateDelivery}
             navigate={this.navigate}
           />
         );
@@ -297,6 +380,7 @@ class App extends Component {
           <ProductList
             products={products}
             searchQuery={searchQuery}
+            selectedCategory="all"
             onAddToCart={this.handleAddToCart}
             navigate={this.navigate}
           />
@@ -315,6 +399,7 @@ class App extends Component {
           currentRoute={currentRoute}
           navigate={this.navigate}
           searchProducts={this.searchProducts}
+          onLogout={this.handleLogout}
         />
         
         <main className="main-content">

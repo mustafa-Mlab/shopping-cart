@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './OrderTracking.scss';
 
-function OrderTracking({ orderId, orders, navigate }) {
+function OrderTracking({ orderId, orders, onSimulateDelivery, navigate }) {
   const [searchId, setSearchId] = useState('');
   const [searchError, setSearchError] = useState('');
 
@@ -64,8 +64,19 @@ function OrderTracking({ orderId, orders, navigate }) {
               <h3>Order <span>{currentOrder.id}</span></h3>
               <p className="order-date">Placed on {currentOrder.date}</p>
             </div>
-            <div className="tracking-badge">
-              Status: {(currentOrder.status || 'ordered').toUpperCase()}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              {currentOrder.status !== 'delivered' && (
+                <button
+                  className="btn-secondary"
+                  style={{ padding: '6px 12px', fontSize: '0.8rem', height: '32px' }}
+                  onClick={() => onSimulateDelivery(currentOrder.id)}
+                >
+                  Deliver Now (Testing)
+                </button>
+              )}
+              <div className="tracking-badge">
+                Status: {(currentOrder.status || 'ordered').toUpperCase()}
+              </div>
             </div>
           </div>
 

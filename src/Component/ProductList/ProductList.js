@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
 import './ProductList.scss';
 
-function ProductList({ products, searchQuery, onAddToCart, navigate }) {
-  // States for all the filters
-  const [selectedMainCat, setSelectedMainCat] = useState('all');
+function ProductList({ products, searchQuery, selectedCategory, onAddToCart, navigate }) {
+  // Filters state (Main Category is now driven by url routing prop)
   const [selectedSubs, setSelectedSubs] = useState([]);
   const [selectedBrands, setSelectedBrands] = useState([]);
   const [selectedSizes, setSelectedSizes] = useState([]);
   const [selectedColors, setSelectedColors] = useState([]);
   const [selectedTags, setSelectedTags] = useState([]);
   const [priceRange, setPriceRange] = useState(3000);
+
+  const selectedMainCat = selectedCategory || 'all';
 
   // Main Categories List
   const mainCategories = ['all', 'man', 'women', 'children', 'infant', 'others'];
@@ -54,7 +55,7 @@ function ProductList({ products, searchQuery, onAddToCart, navigate }) {
       product.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       product.description.toLowerCase().includes(searchQuery.toLowerCase());
 
-    // 2. Main Category
+    // 2. Main Category (URL driven)
     const matchesMainCat = selectedMainCat === 'all' || product.main_category === selectedMainCat;
 
     // 3. Subcategories
@@ -63,17 +64,17 @@ function ProductList({ products, searchQuery, onAddToCart, navigate }) {
     // 4. Brands
     const matchesBrand = selectedBrands.length === 0 || selectedBrands.includes(product.brand);
 
-    // 5. Sizes (checks if product supports at least one selected size)
+    // 5. Sizes
     const matchesSize =
       selectedSizes.length === 0 ||
       (product.available_sizes && product.available_sizes.some((sz) => selectedSizes.includes(sz)));
 
-    // 6. Colors (checks if product supports at least one selected color)
+    // 6. Colors
     const matchesColor =
       selectedColors.length === 0 ||
       (product.color && Object.keys(product.color).some((col) => selectedColors.includes(col)));
 
-    // 7. Tags (checks if product has at least one selected tag)
+    // 7. Tags
     const matchesTag =
       selectedTags.length === 0 ||
       (product.tags && product.tags.some((tag) => selectedTags.includes(tag)));
@@ -102,8 +103,13 @@ function ProductList({ products, searchQuery, onAddToCart, navigate }) {
             key={cat}
             className={`main-cat-btn ${selectedMainCat === cat ? 'active' : ''}`}
             onClick={() => {
-              setSelectedMainCat(cat);
-              setSelectedSubs([]); // Reset subcategory filters on main category change
+              // Reset subcategory selections on main category redirect
+              setSelectedSubs([]);
+              if (cat === 'all') {
+                navigate('home');
+              } else {
+                navigate('category/' + cat);
+              }
             }}
           >
             {cat === 'all' ? 'All Collection' : cat.charAt(0).toUpperCase() + cat.slice(1)}

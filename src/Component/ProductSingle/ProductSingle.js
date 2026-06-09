@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './ProductSingle.scss';
 
-function ProductSingle({ productId, products, onAddToCart, navigate }) {
+function ProductSingle({ productId, products, questions, reviews, onAddToCart, onAddQuestion, navigate }) {
   const product = products.find((p) => p.id === parseInt(productId));
   
   const [selectedSize, setSelectedSize] = useState(
@@ -12,6 +12,7 @@ function ProductSingle({ productId, products, onAddToCart, navigate }) {
   );
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState('description');
+  const [newQuestion, setNewQuestion] = useState('');
 
   if (!product) {
     return (
@@ -28,6 +29,13 @@ function ProductSingle({ productId, products, onAddToCart, navigate }) {
     onAddToCart(product, quantity, selectedSize, selectedColor);
   };
 
+  const handleQuestionSubmit = (e) => {
+    e.preventDefault();
+    if (!newQuestion.trim()) return;
+    onAddQuestion(productId, newQuestion.trim());
+    setNewQuestion('');
+  };
+
   const decreaseQty = () => {
     if (quantity > 1) setQuantity(quantity - 1);
   };
@@ -38,13 +46,28 @@ function ProductSingle({ productId, products, onAddToCart, navigate }) {
 
   const discountPercent = Math.round(((product.price - product.sell_price) / product.price) * 100);
 
+  // Combine default mockup reviews with user reviews from state
+  const defaultReviews = [
+    { reviewerName: 'Mustafa Kamal', rating: 5, comment: 'Absolutely beautiful quality. Fits perfectly and very comfortable to wear. I highly recommend this product to everyone!', date: '6/1/2026' },
+    { reviewerName: 'Alex M.', rating: 4, comment: 'Good fit and nice quality. Will definitely purchase again. The fabric feels very soft and premium.', date: '6/2/2026' }
+  ];
+  
+  const displayReviews = [...reviews, ...defaultReviews];
+
+  // Default mockup questions plus state questions
+  const defaultQuestions = [
+    { text: 'Is this item true to size?', date: '5/28/2026' }
+  ];
+
+  const displayQuestions = [...questions, ...defaultQuestions];
+
   return (
     <div className="product-single-page container">
-      {/* Breadcrumbs */}
+      {/* Breadcrumbs (subcategory instead of category) */}
       <nav className="breadcrumbs">
         <span onClick={() => navigate('home')}>Shop</span>
         <span className="separator">/</span>
-        <span className="category-link" onClick={() => navigate('home')}>{product.category}</span>
+        <span className="category-link" onClick={() => navigate('category/' + product.main_category)}>{product.main_category}</span>
         <span className="separator">/</span>
         <span className="active">{product.title}</span>
       </nav>
@@ -64,12 +87,12 @@ function ProductSingle({ productId, products, onAddToCart, navigate }) {
 
         {/* Right Side: Details Info */}
         <div className="product-info-panel glass-effect">
-          <span className="info-category">{product.category.toUpperCase()}</span>
+          <span className="info-category">{product.subcategory.toUpperCase()}</span>
           <h1 className="info-title">{product.title}</h1>
           
           <div className="info-rating-row">
             <div className="stars">{"★".repeat(4)}{"☆".repeat(1)}</div>
-            <span className="rating-text">4.0 rating (12 verified reviews)</span>
+            <span className="rating-text">4.0 rating ({displayReviews.length} verified reviews)</span>
           </div>
 
           <div className="info-price-section">
@@ -139,6 +162,7 @@ function ProductSingle({ productId, products, onAddToCart, navigate }) {
           </div>
 
           <div className="info-meta">
+            <div><span>Brand:</span> {product.brand}</div>
             <div><span>SKU:</span> {product.sku}</div>
             <div><span>Availability:</span> {product.in_stock ? 'In Stock (Ready to Ship)' : 'Out of Stock'}</div>
           </div>
@@ -158,32 +182,73 @@ function ProductSingle({ productId, products, onAddToCart, navigate }) {
             className={`tab-header-btn ${activeTab === 'reviews' ? 'active' : ''}`}
             onClick={() => setActiveTab('reviews')}
           >
-            Reviews (12)
+            Reviews ({displayReviews.length})
+          </button>
+          <button
+            className={`tab-header-btn ${activeTab === 'qa' ? 'active' : ''}`}
+            onClick={() => setActiveTab('qa')}
+          >
+            Q&A ({displayQuestions.length})
           </button>
         </div>
 
         <div className="tab-content">
-          {activeTab === 'description' ? (
+          {activeTab === 'description' && (
             <div className="tab-desc">
               <p>{product.description}</p>
               <br />
               <p>Designed with meticulous attention to detail and high-grade stitching. Engineered for daily wear, combining maximum breathability with modern urban aesthetics. Features reinforced seams and comfort-stretch attributes.</p>
             </div>
-          ) : (
+          )}
+
+          {activeTab === 'reviews' && (
             <div className="tab-reviews">
-              <div className="review-item">
-                <div className="review-meta">
-                  <span className="reviewer-name">Mustafa Kamal</span>
-                  <span className="review-stars">★★★★★</span>
+              {displayReviews.map((rev, idx) => (
+                <div key={idx} className="review-item">
+                  <div className="review-meta">
+                    <span className="reviewer-name">{rev.reviewerName}</span>
+                    <div>
+                      <span className="review-stars">{"★".repeat(rev.rating)}{"☆".repeat(5 - rev.rating)}</span>
+                      <span className="review-date">{rev.date}</span>
+                    </div>
+                  </div>
+                  <p className="review-body">{rev.comment}</p>
                 </div>
-                <p className="review-body">Absolutely beautiful quality. Fits perfectly and very comfortable to wear. I highly recommend this product to everyone!</p>
-              </div>
-              <div className="review-item">
-                <div className="review-meta">
-                  <span className="reviewer-name">Alex M.</span>
-                  <span className="review-stars">★★★★☆</span>
-                </div>
-                <p className="review-body">Good fit and nice quality. Will definitely purchase again. The fabric feels very soft and premium.</p>
+              ))}
+            </div>
+          )}
+
+          {activeTab === 'qa' && (
+            <div className="tab-qa">
+              <form className="ask-question-form" onSubmit={handleQuestionSubmit}>
+                <textarea
+                  className="form-control"
+                  placeholder="Have a question about this product? Ask here..."
+                  rows="3"
+                  value={newQuestion}
+                  onChange={(e) => setNewQuestion(e.target.value)}
+                ></textarea>
+                <button type="submit" className="btn-submit-question btn-primary">
+                  Ask Question
+                </button>
+              </form>
+
+              <div className="questions-list">
+                {displayQuestions.map((q, idx) => (
+                  <div key={idx} className="question-item">
+                    <div className="question-header">
+                      <span className="q-badge">Q</span>
+                      <span className="q-text">{q.text}</span>
+                      <span className="q-date">{q.date}</span>
+                    </div>
+                    <div className="answer-item">
+                      <span className="a-badge">A</span>
+                      <span className="a-text">
+                        Please contact our customer care at support@megashop.com for sizing advice or detailed specifications.
+                      </span>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           )}

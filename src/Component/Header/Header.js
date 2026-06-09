@@ -38,12 +38,6 @@ function Header({ cart, user, navigate, searchProducts, onLogout }) {
         </div>
 
         <nav className="nav-section">
-          {/* Main navigation list (Orders link has been removed from here) */}
-          <ul className="nav-links">
-            <li className="active-item" onClick={() => navigate('home')}>
-              <a href="#/" onClick={(e) => { e.preventDefault(); navigate('home'); }}>Collection</a>
-            </li>
-          </ul>
 
           <div className="actions-section">
             {user ? (

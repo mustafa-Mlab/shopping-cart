@@ -102,3 +102,22 @@ dist
 
 # TernJS port file
 .tern-port
+
+# React production builds
+/build/
+/public/build/
+
+# Local environment variables
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# System & Editor Files
+.DS_Store
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+

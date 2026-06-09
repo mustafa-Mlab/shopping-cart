@@ -16,7 +16,7 @@ function Checkout({ cart, user, onPlaceOrder, navigate }) {
 
   const [errors, setErrors] = useState({});
 
-  const subtotal = cart.reduce((sum, item) => sum + item.product.sell_price * item.quantity, 0);
+  const subtotal = cart.reduce((sum, item) => sum + (item.sell_price || item.product.sell_price) * item.quantity, 0);
   const shipping = subtotal > 1500 ? 0 : 15;
   const tax = Math.round(subtotal * 0.05);
   const total = subtotal + shipping + tax;
@@ -245,7 +245,7 @@ function Checkout({ cart, user, onPlaceOrder, navigate }) {
                     {item.selectedSize.toUpperCase()} | {item.selectedColor} (x{item.quantity})
                   </span>
                 </div>
-                <span className="item-price">${item.product.sell_price * item.quantity}</span>
+                <span className="item-price">${(item.sell_price || item.product.sell_price) * item.quantity}</span>
               </div>
             ))}
           </div>

@@ -275,10 +275,24 @@
   flex: 1;
   height: 52px;
   font-size: 1.05rem;
+  transition: all 0.3s ease;
   
   .cart-svg {
     width: 20px;
     height: 20px;
+  }
+
+  &.added {
+    background-color: #10b981 !important;
+    border-color: #10b981 !important;
+    color: #ffffff !important;
+    cursor: default;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    
+    &:hover {
+      background-color: #10b981 !important;
+      transform: none !important;
+    }
   }
 }
 

@@ -7,7 +7,7 @@ function CartComponent({ cart, onUpdateCartQty, onRemoveFromCart, navigate }) {
   const [promoError, setPromoError] = useState('');
   const [promoSuccess, setPromoSuccess] = useState('');
 
-  const subtotal = cart.reduce((sum, item) => sum + item.product.sell_price * item.quantity, 0);
+  const subtotal = cart.reduce((sum, item) => sum + (item.sell_price || item.product.sell_price) * item.quantity, 0);
   
   // Shipping rule: Free shipping on orders over $1500, otherwise $15
   const shipping = subtotal > 1500 || subtotal === 0 ? 0 : 15;
@@ -65,7 +65,7 @@ function CartComponent({ cart, onUpdateCartQty, onRemoveFromCart, navigate }) {
 
               <div className="cart-item-details">
                 <h3 onClick={() => navigate(`product/${item.product.id}`)}>{item.product.title}</h3>
-                <span className="item-category">{item.product.category.toUpperCase()}</span>
+                <span className="item-category">{(item.product.subcategory || item.product.main_category).toUpperCase()}</span>
                 
                 <div className="item-specifications">
                   <span className="spec-badge">Size: {item.selectedSize.toUpperCase()}</span>
@@ -81,8 +81,8 @@ function CartComponent({ cart, onUpdateCartQty, onRemoveFromCart, navigate }) {
                 </div>
                 
                 <div className="price-info">
-                  <span className="total-price">${item.product.sell_price * item.quantity}</span>
-                  <span className="unit-price">${item.product.sell_price} each</span>
+                  <span className="total-price">${(item.sell_price || item.product.sell_price) * item.quantity}</span>
+                  <span className="unit-price">${item.sell_price || item.product.sell_price} each</span>
                 </div>
 
                 <button className="btn-remove-item" onClick={() => onRemoveFromCart(idx)} title="Remove item">

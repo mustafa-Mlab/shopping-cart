@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './ProductList.scss';
+import { getVariantPrice } from '../../utils/pricing';
 
 function ProductList({ products, searchQuery, selectedCategory, onAddToCart, navigate }) {
   // Filters state (Main Category is now driven by url routing prop)
@@ -9,6 +10,15 @@ function ProductList({ products, searchQuery, selectedCategory, onAddToCart, nav
   const [selectedColors, setSelectedColors] = useState([]);
   const [selectedTags, setSelectedTags] = useState([]);
   const [priceRange, setPriceRange] = useState(3000);
+  const [addedProductId, setAddedProductId] = useState(null);
+
+  const handleListAddToCart = (product, size, color, price, sellPrice) => {
+    onAddToCart(product, 1, size, color, price, sellPrice);
+    setAddedProductId(product.id);
+    setTimeout(() => {
+      setAddedProductId(null);
+    }, 2000);
+  };
 
   const selectedMainCat = selectedCategory || 'all';
 
@@ -250,8 +260,12 @@ function ProductList({ products, searchQuery, selectedCategory, onAddToCart, nav
           ) : (
             <div className="product-grid">
               {filteredProducts.map((product) => {
+                const defaultSize = product.available_sizes ? product.available_sizes[0] : '';
+                const defaultColor = product.color ? Object.keys(product.color)[0] : '';
+                const { price: defaultPrice, sell_price: defaultSellPrice } = getVariantPrice(product, defaultSize, defaultColor);
+                
                 const discountPercent = Math.round(
-                  ((product.price - product.sell_price) / product.price) * 100
+                  ((defaultPrice - defaultSellPrice) / defaultPrice) * 100
                 );
 
                 return (
@@ -283,9 +297,9 @@ function ProductList({ products, searchQuery, selectedCategory, onAddToCart, nav
 
                       <div className="product-price-row">
                         <div className="prices">
-                          <span className="sell-price">${product.sell_price}</span>
-                          {product.price > product.sell_price && (
-                            <span className="regular-price">${product.price}</span>
+                          <span className="sell-price">${defaultSellPrice}</span>
+                          {defaultPrice > defaultSellPrice && (
+                            <span className="regular-price">${defaultPrice}</span>
                           )}
                         </div>
                       </div>
@@ -298,17 +312,18 @@ function ProductList({ products, searchQuery, selectedCategory, onAddToCart, nav
                           Details
                         </button>
                         <button
-                          className="btn-add-to-cart btn-primary"
+                          className={`btn-add-to-cart btn-primary ${addedProductId === product.id ? 'added' : ''}`}
                           onClick={() =>
-                            onAddToCart(
+                            handleListAddToCart(
                               product,
-                              1,
-                              product.available_sizes[0],
-                              Object.keys(product.color)[0]
+                              defaultSize,
+                              defaultColor,
+                              defaultPrice,
+                              defaultSellPrice
                             )
                           }
                         >
-                          Add to Cart
+                          {addedProductId === product.id ? 'Added ✓' : 'Add to Cart'}
                         </button>
                       </div>
                     </div>

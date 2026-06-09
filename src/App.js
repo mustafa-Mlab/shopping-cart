@@ -91,8 +91,7 @@ class App extends Component {
   // Trigger page updates via hash changes with clean URL fallback
   navigate = (path) => {
     if (path === 'home') {
-      // Clear hash cleanly from URL without page reload
-      window.location.hash = '';
+      // Clear hash cleanly from URL without page reload using pushState directly
       window.history.pushState(
         "", 
         document.title, 
@@ -131,7 +130,7 @@ class App extends Component {
   };
 
   // Cart Handlers
-  handleAddToCart = (product, quantity, selectedSize, selectedColor) => {
+  handleAddToCart = (product, quantity, selectedSize, selectedColor, price, sell_price) => {
     const { cart } = this.state;
     const existingIndex = cart.findIndex(
       (item) =>
@@ -144,12 +143,21 @@ class App extends Component {
     if (existingIndex > -1) {
       updatedCart = [...cart];
       updatedCart[existingIndex].quantity += quantity;
+      // Keep price and sell_price updated
+      updatedCart[existingIndex].price = price || product.price;
+      updatedCart[existingIndex].sell_price = sell_price || product.sell_price;
     } else {
-      updatedCart = [...cart, { product, quantity, selectedSize, selectedColor }];
+      updatedCart = [...cart, { 
+        product, 
+        quantity, 
+        selectedSize, 
+        selectedColor,
+        price: price || product.price,
+        sell_price: sell_price || product.sell_price
+      }];
     }
 
     this.saveCartToStorage(updatedCart);
-    this.navigate('cart');
   };
 
   handleUpdateCartQty = (index, newQty) => {

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './ProductSingle.scss';
+import { getVariantPrice } from '../../utils/pricing';
 
 function ProductSingle({ productId, products, questions, reviews, onAddToCart, onAddQuestion, navigate }) {
   const product = products.find((p) => p.id === parseInt(productId));
@@ -13,6 +14,7 @@ function ProductSingle({ productId, products, questions, reviews, onAddToCart, o
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState('description');
   const [newQuestion, setNewQuestion] = useState('');
+  const [addedToCart, setAddedToCart] = useState(false);
 
   if (!product) {
     return (
@@ -25,8 +27,14 @@ function ProductSingle({ productId, products, questions, reviews, onAddToCart, o
     );
   }
 
+  const { price: currentPrice, sell_price: currentSellPrice } = getVariantPrice(product, selectedSize, selectedColor);
+
   const handleAddToCart = () => {
-    onAddToCart(product, quantity, selectedSize, selectedColor);
+    onAddToCart(product, quantity, selectedSize, selectedColor, currentPrice, currentSellPrice);
+    setAddedToCart(true);
+    setTimeout(() => {
+      setAddedToCart(false);
+    }, 2000);
   };
 
   const handleQuestionSubmit = (e) => {
@@ -44,7 +52,7 @@ function ProductSingle({ productId, products, questions, reviews, onAddToCart, o
     setQuantity(quantity + 1);
   };
 
-  const discountPercent = Math.round(((product.price - product.sell_price) / product.price) * 100);
+  const discountPercent = Math.round(((currentPrice - currentSellPrice) / currentPrice) * 100);
 
   // Combine default mockup reviews with user reviews from state
   const defaultReviews = [
@@ -96,10 +104,10 @@ function ProductSingle({ productId, products, questions, reviews, onAddToCart, o
           </div>
 
           <div className="info-price-section">
-            <span className="sell-price">${product.sell_price}</span>
-            {product.price > product.sell_price && (
+            <span className="sell-price">${currentSellPrice}</span>
+            {currentPrice > currentSellPrice && (
               <>
-                <span className="regular-price">${product.price}</span>
+                <span className="regular-price">${currentPrice}</span>
                 <span className="discount-tag">{discountPercent}% OFF</span>
               </>
             )}
@@ -153,11 +161,11 @@ function ProductSingle({ productId, products, questions, reviews, onAddToCart, o
               <button className="qty-btn" onClick={increaseQty}>+</button>
             </div>
             
-            <button className="btn-add-cart btn-primary" onClick={handleAddToCart}>
+            <button className={`btn-add-cart btn-primary ${addedToCart ? 'added' : ''}`} onClick={handleAddToCart}>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="cart-svg">
                 <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
               </svg>
-              Add to Cart
+              {addedToCart ? 'Added ✓' : 'Add to Cart'}
             </button>
           </div>
 

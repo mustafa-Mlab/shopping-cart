@@ -433,6 +433,23 @@
         font-size: 0.9rem;
         border-radius: var(--radius-md);
       }
+
+      .btn-add-to-cart {
+        transition: all 0.3s ease;
+
+        &.added {
+          background-color: #10b981 !important;
+          border-color: #10b981 !important;
+          color: #ffffff !important;
+          cursor: default;
+          box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);
+
+          &:hover {
+            background-color: #10b981 !important;
+            transform: none !important;
+          }
+        }
+      }
     }
   }
 }

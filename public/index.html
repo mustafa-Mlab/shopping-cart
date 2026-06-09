@@ -38,20 +38,10 @@
     </div>
     <script>
       (function () {
-        var buildBase = '/build/';
         var root = document.getElementById('root');
 
         function showError(message) {
           root.innerHTML = '<div class="loading-state">' + message + '</div>';
-        }
-
-        function injectStyles(files) {
-          files.forEach(function (file) {
-            var link = document.createElement('link');
-            link.rel = 'stylesheet';
-            link.href = buildBase + file;
-            document.head.appendChild(link);
-          });
         }
 
         function loadScript(src) {
@@ -65,16 +55,28 @@
           });
         }
 
-        fetch(buildBase + 'asset-manifest.json', { cache: 'no-store' })
-          .then(function (response) {
-            if (!response.ok) {
-              throw new Error('Build assets are missing. Run npm run build first.');
-            }
+        function loadManifest(base) {
+          return fetch(base + 'asset-manifest.json', { cache: 'no-store' })
+            .then(function (response) {
+              if (!response.ok) {
+                throw new Error('Manifest not found at ' + base);
+              }
+              return response.json().then(function (manifest) {
+                return { manifest: manifest, base: base };
+              });
+            });
+        }
 
-            return response.json();
+        // Try loading from /build/ first, then fall back to / (root)
+        loadManifest('/build/')
+          .catch(function () {
+            return loadManifest('/');
           })
-          .then(function (manifest) {
+          .then(function (result) {
+            var manifest = result.manifest;
+            var base = result.base;
             var entrypoints = manifest.entrypoints || [];
+            
             var styles = entrypoints.filter(function (file) {
               return file.slice(-4) === '.css';
             });
@@ -82,16 +84,21 @@
               return file.slice(-3) === '.js';
             });
 
-            injectStyles(styles);
+            styles.forEach(function (file) {
+              var link = document.createElement('link');
+              link.rel = 'stylesheet';
+              link.href = base + file;
+              document.head.appendChild(link);
+            });
 
             return scripts.reduce(function (promise, file) {
               return promise.then(function () {
-                return loadScript(buildBase + file);
+                return loadScript(base + file);
               });
             }, Promise.resolve());
           })
           .catch(function (error) {
-            showError(error.message);
+            showError('Build assets are missing. Run npm run build first.');
           });
       })();
     </script>

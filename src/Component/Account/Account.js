@@ -95,7 +95,7 @@ function Account({ user, orders, onLogout, navigate }) {
                         <td className="order-id-cell">{order.id}</td>
                         <td>{order.date}</td>
                         <td>{order.paymentMethod === 'cod' ? 'COD' : 'Card'}</td>
-                        <td className="order-total-cell">${order.totals.total}</td>
+                        <td className="order-total-cell">${Number(order.totals.total).toFixed(2)}</td>
                         <td>
                           <span className={`status-badge ${statusColors[order.status || 'ordered']}`}>
                             {(order.status || 'ordered').toUpperCase()}

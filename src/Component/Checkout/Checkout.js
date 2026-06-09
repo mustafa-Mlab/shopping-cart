@@ -8,6 +8,7 @@ function Checkout({ cart, user, onPlaceOrder, navigate }) {
     address: '',
     city: '',
     zip: '',
+    deliveryLocation: 'inside',
     paymentMethod: 'cod',
     cardNumber: '',
     cardExpiry: '',
@@ -17,7 +18,7 @@ function Checkout({ cart, user, onPlaceOrder, navigate }) {
   const [errors, setErrors] = useState({});
 
   const subtotal = cart.reduce((sum, item) => sum + (item.sell_price || item.product.sell_price) * item.quantity, 0);
-  const shipping = subtotal > 1500 ? 0 : 15;
+  const shipping = formData.deliveryLocation === 'outside' ? 1.62 : 1.00;
   const tax = Math.round(subtotal * 0.05);
   const total = subtotal + shipping + tax;
 
@@ -152,6 +153,35 @@ function Checkout({ cart, user, onPlaceOrder, navigate }) {
             </div>
           </div>
 
+          <div className="form-group" style={{ marginTop: '20px' }}>
+            <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>Delivery Area</label>
+            <div className="delivery-zone-options">
+              <label className={`payment-option-card ${formData.deliveryLocation === 'inside' ? 'active' : ''}`}>
+                <input
+                  type="radio"
+                  name="deliveryLocation"
+                  value="inside"
+                  checked={formData.deliveryLocation === 'inside'}
+                  onChange={handleInputChange}
+                />
+                <span className="option-title">Inside Dhaka</span>
+                <span className="option-desc">Delivery charge: $1.00</span>
+              </label>
+
+              <label className={`payment-option-card ${formData.deliveryLocation === 'outside' ? 'active' : ''}`}>
+                <input
+                  type="radio"
+                  name="deliveryLocation"
+                  value="outside"
+                  checked={formData.deliveryLocation === 'outside'}
+                  onChange={handleInputChange}
+                />
+                <span className="option-title">Outside Dhaka</span>
+                <span className="option-desc">Delivery charge: $1.62</span>
+              </label>
+            </div>
+          </div>
+
           <div className="info-divider"></div>
 
           <h3 className="form-section-title">Payment Method</h3>
@@ -228,7 +258,7 @@ function Checkout({ cart, user, onPlaceOrder, navigate }) {
           )}
 
           <button type="submit" className="btn-place-order btn-primary">
-            Place Order (${total})
+            Place Order (${total.toFixed(2)})
           </button>
         </form>
 
@@ -259,7 +289,7 @@ function Checkout({ cart, user, onPlaceOrder, navigate }) {
 
           <div className="summary-row">
             <span>Shipping</span>
-            <span>{shipping === 0 ? 'FREE' : `$${shipping}`}</span>
+            <span>${shipping.toFixed(2)}</span>
           </div>
 
           <div className="summary-row">
@@ -271,7 +301,7 @@ function Checkout({ cart, user, onPlaceOrder, navigate }) {
 
           <div className="summary-row total-row">
             <span>Total to Pay</span>
-            <span>${total}</span>
+            <span>${total.toFixed(2)}</span>
           </div>
         </aside>
       </div>

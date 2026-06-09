@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './ReviewsDashboard.scss';
+import { getProductSlug } from '../../utils/slug';
 
 function ReviewsDashboard({ user, orders, reviews, onAddReview, navigate }) {
   const [activeTab, setActiveTab] = useState('pending');
@@ -197,7 +198,7 @@ function ReviewsDashboard({ user, orders, reviews, onAddReview, navigate }) {
                       </div>
 
                       <div className="row-item-details">
-                        <h4 onClick={() => navigate(`product/${item.product.id}`)}>{item.product.title}</h4>
+                        <h4 onClick={() => navigate(`product/${getProductSlug(item.product)}`)}>{item.product.title}</h4>
                         <p className="order-id-info">Order ID: <span>{item.orderId}</span></p>
                       </div>
 
@@ -236,7 +237,7 @@ function ReviewsDashboard({ user, orders, reviews, onAddReview, navigate }) {
                           </div>
                         </div>
                         <div className="row-item-details">
-                          <h4 onClick={() => navigate(`product/${item.product.id}`)}>{item.product.title}</h4>
+                          <h4 onClick={() => navigate(`product/${getProductSlug(item.product)}`)}>{item.product.title}</h4>
                           <span className="order-id-info">Order ID: <span>{item.orderId}</span></span>
                         </div>
                       </div>

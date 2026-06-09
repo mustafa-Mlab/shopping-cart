@@ -56,7 +56,7 @@ function ThankYou({ orderId, orders, navigate }) {
           </div>
           <div className="detail-item">
             <span className="label">Total Amount</span>
-            <span className="value price">${order.totals.total}</span>
+            <span className="value price">${Number(order.totals.total).toFixed(2)}</span>
           </div>
         </div>
 

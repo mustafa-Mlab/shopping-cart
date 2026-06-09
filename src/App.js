@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './assets/scss/App.scss';
 import ProductData from './Data/products.json';
+import { getProductSlug } from './utils/slug';
 
 // Import Components
 import Header from './Component/Header/Header';
@@ -39,45 +40,53 @@ class App extends Component {
   }
 
   componentDidMount() {
-    // Listen to hash changes for routing
-    window.addEventListener('hashchange', this.handleHashChange);
-    this.handleHashChange(); // Run on initial load
+    // Listen to popstate changes (clean HTML5 history routing)
+    window.addEventListener('popstate', this.handleRouteChange);
+    this.handleRouteChange(); // Run on initial load
   }
 
   componentWillUnmount() {
-    window.removeEventListener('hashchange', this.handleHashChange);
+    window.removeEventListener('popstate', this.handleRouteChange);
   }
 
-  // Parse location hash and set routing state
-  handleHashChange = () => {
-    const hash = window.location.hash || '';
+  // Parse location pathname and set routing state
+  handleRouteChange = () => {
+    let path = window.location.pathname || '/';
+    
+    // Normalize path by stripping leading/trailing slashes
+    if (path.startsWith('/')) {
+      path = path.slice(1);
+    }
+    if (path.endsWith('/')) {
+      path = path.slice(0, -1);
+    }
     
     // Simple Router Matching
-    if (hash === '#/' || hash === '' || hash === '#') {
+    if (path === '') {
       this.setState({ currentRoute: 'home', routeParams: {} });
-    } else if (hash.startsWith('#/product/')) {
-      const id = hash.replace('#/product/', '');
-      this.setState({ currentRoute: 'product', routeParams: { id } });
-    } else if (hash.startsWith('#/category/')) {
-      const category = hash.replace('#/category/', '');
+    } else if (path.startsWith('product/')) {
+      const slug = path.replace('product/', '');
+      this.setState({ currentRoute: 'product', routeParams: { slug } });
+    } else if (path.startsWith('category/')) {
+      const category = path.replace('category/', '');
       this.setState({ currentRoute: 'home', routeParams: { category } });
-    } else if (hash === '#/cart') {
+    } else if (path === 'cart') {
       this.setState({ currentRoute: 'cart', routeParams: {} });
-    } else if (hash === '#/checkout') {
+    } else if (path === 'checkout') {
       this.setState({ currentRoute: 'checkout', routeParams: {} });
-    } else if (hash.startsWith('#/thankyou/')) {
-      const orderId = hash.replace('#/thankyou/', '');
+    } else if (path.startsWith('thankyou/')) {
+      const orderId = path.replace('thankyou/', '');
       this.setState({ currentRoute: 'thankyou', routeParams: { orderId } });
-    } else if (hash === '#/login') {
+    } else if (path === 'login') {
       this.setState({ currentRoute: 'login', routeParams: {} });
-    } else if (hash === '#/account') {
+    } else if (path === 'account') {
       this.setState({ currentRoute: 'account', routeParams: {} });
-    } else if (hash === '#/reviews') {
+    } else if (path === 'reviews') {
       this.setState({ currentRoute: 'reviews', routeParams: {} });
-    } else if (hash.startsWith('#/track/')) {
-      const orderId = hash.replace('#/track/', '');
+    } else if (path.startsWith('track/')) {
+      const orderId = path.replace('track/', '');
       this.setState({ currentRoute: 'track', routeParams: { orderId } });
-    } else if (hash === '#/track') {
+    } else if (path === 'track') {
       this.setState({ currentRoute: 'track', routeParams: {} });
     } else {
       // Fallback
@@ -88,19 +97,14 @@ class App extends Component {
     window.scrollTo(0, 0);
   };
 
-  // Trigger page updates via hash changes with clean URL fallback
   navigate = (path) => {
-    if (path === 'home') {
-      // Clear hash cleanly from URL without page reload using pushState directly
-      window.history.pushState(
-        "", 
-        document.title, 
-        window.location.pathname + window.location.search
-      );
-      this.setState({ currentRoute: 'home', routeParams: {} });
-    } else {
-      window.location.hash = `#/${path}`;
+    let targetPath = '/';
+    if (path !== 'home' && path !== '') {
+      targetPath = '/' + path;
     }
+    
+    window.history.pushState(null, '', targetPath);
+    this.handleRouteChange();
   };
 
   // Persist State Utilities
@@ -311,12 +315,14 @@ class App extends Component {
           />
         );
       case 'product':
+        const matchedProduct = products.find((p) => getProductSlug(p) === routeParams.slug);
+        const matchedId = matchedProduct ? matchedProduct.id : 0;
         return (
           <ProductSingle
-            productId={routeParams.id}
+            productSlug={routeParams.slug}
             products={products}
-            questions={questions.filter((q) => q.productId === parseInt(routeParams.id))}
-            reviews={reviews.filter((r) => r.productId === parseInt(routeParams.id))}
+            questions={questions.filter((q) => q.productId === matchedId)}
+            reviews={reviews.filter((r) => r.productId === matchedId)}
             onAddToCart={this.handleAddToCart}
             onAddQuestion={this.handleAddQuestion}
             navigate={this.navigate}

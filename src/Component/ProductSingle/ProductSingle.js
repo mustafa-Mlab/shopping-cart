@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import './ProductSingle.scss';
 import { getVariantPrice } from '../../utils/pricing';
+import { getProductSlug } from '../../utils/slug';
 
-function ProductSingle({ productId, products, questions, reviews, onAddToCart, onAddQuestion, navigate }) {
-  const product = products.find((p) => p.id === parseInt(productId));
+function ProductSingle({ productSlug, products, questions, reviews, onAddToCart, onAddQuestion, navigate }) {
+  const product = products.find((p) => getProductSlug(p) === productSlug);
   
   const [selectedSize, setSelectedSize] = useState(
     product ? product.available_sizes[0] : ''
@@ -40,7 +41,7 @@ function ProductSingle({ productId, products, questions, reviews, onAddToCart, o
   const handleQuestionSubmit = (e) => {
     e.preventDefault();
     if (!newQuestion.trim()) return;
-    onAddQuestion(productId, newQuestion.trim());
+    onAddQuestion(product.id, newQuestion.trim());
     setNewQuestion('');
   };
 

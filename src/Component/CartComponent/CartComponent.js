@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './CartComponent.scss';
+import { getProductSlug } from '../../utils/slug';
 
 function CartComponent({ cart, onUpdateCartQty, onRemoveFromCart, navigate }) {
   const [promoCode, setPromoCode] = useState('');
@@ -64,7 +65,7 @@ function CartComponent({ cart, onUpdateCartQty, onRemoveFromCart, navigate }) {
               </div>
 
               <div className="cart-item-details">
-                <h3 onClick={() => navigate(`product/${item.product.id}`)}>{item.product.title}</h3>
+                <h3 onClick={() => navigate(`product/${getProductSlug(item.product)}`)}>{item.product.title}</h3>
                 <span className="item-category">{(item.product.subcategory || item.product.main_category).toUpperCase()}</span>
                 
                 <div className="item-specifications">

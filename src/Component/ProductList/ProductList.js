@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import './ProductList.scss';
 import { getVariantPrice } from '../../utils/pricing';
+import { getProductSlug } from '../../utils/slug';
 
 function ProductList({ products, searchQuery, selectedCategory, onAddToCart, navigate }) {
   // Filters state (Main Category is now driven by url routing prop)
@@ -270,7 +271,7 @@ function ProductList({ products, searchQuery, selectedCategory, onAddToCart, nav
 
                 return (
                   <div key={product.id} className="product-card glass-effect hover-lift">
-                    <div className="product-card-image" onClick={() => navigate(`product/${product.id}`)}>
+                    <div className="product-card-image" onClick={() => navigate(`product/${getProductSlug(product)}`)}>
                       <div className="image-placeholder">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="placeholder-icon">
                           <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
@@ -286,7 +287,7 @@ function ProductList({ products, searchQuery, selectedCategory, onAddToCart, nav
 
                     <div className="product-card-content">
                       <span className="product-category">{product.subcategory.toUpperCase()}</span>
-                      <h3 className="product-title" onClick={() => navigate(`product/${product.id}`)}>
+                      <h3 className="product-title" onClick={() => navigate(`product/${getProductSlug(product)}`)}>
                         {product.title}
                       </h3>
 
@@ -307,7 +308,7 @@ function ProductList({ products, searchQuery, selectedCategory, onAddToCart, nav
                       <div className="product-card-actions">
                         <button
                           className="btn-details btn-secondary"
-                          onClick={() => navigate(`product/${product.id}`)}
+                          onClick={() => navigate(`product/${getProductSlug(product)}`)}
                         >
                           Details
                         </button>

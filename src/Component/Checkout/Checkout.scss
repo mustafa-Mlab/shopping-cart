@@ -36,7 +36,7 @@
   }
 }
 
-.payment-options {
+.payment-options, .delivery-zone-options {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 16px;
@@ -194,7 +194,7 @@
 }
 
 @media (max-width: 576px) {
-  .payment-options {
+  .payment-options, .delivery-zone-options {
     grid-template-columns: 1fr;
   }
 }

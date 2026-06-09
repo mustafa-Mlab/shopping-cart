@@ -1,0 +1,9 @@
+{
+  "cleanUrls": true,
+  "rewrites": [
+    {
+      "source": "/((?!build/|sc-logo.jpg|favicon.ico|manifest.json|robots.txt).*)",
+      "destination": "/index.html"
+    }
+  ]
+}

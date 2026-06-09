@@ -7,7 +7,6 @@ import './assets/css/App.css';
 import ProductItemComponent from './Component/ProductItemComponent/ProductItem'
 
 function App() {
-  console.log(ProductList);
   return (
     <div className="App">
       <div className="container">
@@ -18,10 +17,10 @@ function App() {
               <div className="logo col-md-3"><img className="site-logo" src={logo} alt="Logo " /></div>
               <div className="menu col-md-9">
                 <ul className="main-nav">
-                  <li className="menu-item"><a className="menu-link" href="http://localhost:3000/" >Man</a></li>
-                  <li className="menu-item"><a className="menu-link" href="http://localhost:3000/" >Woman</a></li>
-                  <li className="menu-item"><a className="menu-link" href="http://localhost:3000/" >Kids</a></li>
-                  <li className="menu-item"><a className="menu-link" href="http://localhost:3000/" >Lifestyle</a></li>
+                  <li className="menu-item"><a className="menu-link" href="#man" >Man</a></li>
+                  <li className="menu-item"><a className="menu-link" href="#woman" >Woman</a></li>
+                  <li className="menu-item"><a className="menu-link" href="#kids" >Kids</a></li>
+                  <li className="menu-item"><a className="menu-link" href="#lifestyle" >Lifestyle</a></li>
                 </ul>
               </div>
             {/* </header> */}
@@ -30,7 +29,7 @@ function App() {
 
             </div>
             <div className="products row">
-              { ProductList.data.map(item => <ProductItemComponent product={item} />) }
+              {ProductList.data.map(item => <ProductItemComponent key={item.id} product={item} />)}
             </div>
           </div>
           <div className="row">

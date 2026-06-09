@@ -11,7 +11,7 @@ class AddToCartButtonComponent extends Component{
     }
     const id = this.props.product_id
     return(
-      <a className="add-to-cart" href="http://localhost:3000/" data-productID={id} onClick={handleClick} >Add to cart</a>
+      <a className="add-to-cart" href="#add-to-cart" data-productID={id} onClick={handleClick} >Add to cart</a>
     );
   }
 }

@@ -1,10 +1,12 @@
 {
-  "total_products": 6,
+  "total_products": 8,
   "data": [
     {
       "id": 1,
       "title": "Denim Jeans",
-      "category": "jeans",
+      "main_category": "man",
+      "subcategory": "jeans",
+      "brand": "Denim Co.",
       "size": {"xxl": 2, "xl": 2, "m": 1, "s": 6},
       "price": 120,
       "sell_price": 100,
@@ -14,12 +16,15 @@
       "description": "Premium Denim Jeans, designed for style and long-lasting durability. Made from 100% genuine indigo-dyed cotton denim with a classic mid-rise waist and comfortable fit.",
       "available_sizes": ["s", "m", "xl", "xxl"],
       "image": "#",
-      "in_stock": true
+      "in_stock": true,
+      "tags": ["new-arrival", "denim", "blue", "stretch"]
     },
     {
       "id": 2,
       "title": "Puma Jeans",
-      "category": "jeans",
+      "main_category": "man",
+      "subcategory": "jeans",
+      "brand": "Puma",
       "size": {"xxl": 1, "xl": 3, "m": 4, "s": 2},
       "price": 180,
       "sell_price": 150,
@@ -29,12 +34,15 @@
       "description": "Sporty and athletic-inspired denim jeans from Puma. Crafted with high-stretch elastane blends for maximum mobility and a modern slim-fit aesthetic.",
       "available_sizes": ["s", "m", "xl"],
       "image": "#",
-      "in_stock": true
+      "in_stock": true,
+      "tags": ["sporty", "stretch", "black", "discount"]
     },
     {
       "id": 3,
       "title": "Deshi Genji",
-      "category": "t-shirts",
+      "main_category": "man",
+      "subcategory": "t-shirts",
+      "brand": "Deshi Wear",
       "size": {"xxl": 5, "xl": 2, "m": 8, "s": 12},
       "price": 300,
       "sell_price": 250,
@@ -44,12 +52,15 @@
       "description": "A classic local t-shirt (Genji) made from breathable 180GSM combed cotton. Perfect for the tropical hot weather, ensuring cool comfort all day long.",
       "available_sizes": ["s", "m", "xl", "xxl"],
       "image": "#",
-      "in_stock": true
+      "in_stock": true,
+      "tags": ["hot-sale", "cotton", "tropical", "classic"]
     },
     {
       "id": 4,
       "title": "B-Deshi Genji",
-      "category": "t-shirts",
+      "main_category": "women",
+      "subcategory": "t-shirts",
+      "brand": "B-Desh",
       "size": {"xxl": 2, "xl": 4, "m": 5, "s": 6},
       "price": 300,
       "sell_price": 250,
@@ -59,12 +70,15 @@
       "description": "Vibrant and colourful edition of the local Deshi Genji, styled with chest graphic prints. Premium soft-wash finish for superior feel.",
       "available_sizes": ["s", "m", "xl"],
       "image": "#",
-      "in_stock": true
+      "in_stock": true,
+      "tags": ["graphic", "cotton", "color", "casual"]
     },
     {
       "id": 5,
       "title": "Pakistani Sharee",
-      "category": "traditional",
+      "main_category": "women",
+      "subcategory": "sharees",
+      "brand": "Pak Silk",
       "size": {"free": 10},
       "price": 3000,
       "sell_price": 2500,
@@ -74,12 +88,15 @@
       "description": "Exquisite premium silk sharee with intricate hand-embroidered borders and traditional zari artwork. An elegant attire for weddings and grand festive celebrations.",
       "available_sizes": ["free"],
       "image": "#",
-      "in_stock": true
+      "in_stock": true,
+      "tags": ["luxury", "silk", "wedding", "festive"]
     },
     {
       "id": 6,
       "title": "American Lungi",
-      "category": "traditional",
+      "main_category": "others",
+      "subcategory": "lungi",
+      "brand": "US-Fusion",
       "size": {"free": 20},
       "price": 500,
       "sell_price": 450,
@@ -89,7 +106,44 @@
       "description": "A modern twist to the traditional men's wrap. Featuring premium lightweight cotton flannel material in checkered patterns. Relaxed fit for casual lounge comfort.",
       "available_sizes": ["free"],
       "image": "#",
-      "in_stock": true
+      "in_stock": true,
+      "tags": ["checkered", "flannel", "loungewear", "cotton"]
+    },
+    {
+      "id": 7,
+      "title": "Kids Polo Shirt",
+      "main_category": "children",
+      "subcategory": "polo",
+      "brand": "Puma",
+      "size": {"xl": 2, "m": 5, "s": 8},
+      "price": 80,
+      "sell_price": 60,
+      "quantity": 15,
+      "color": {"red": 5, "blue": 10},
+      "sku": "kids-polo-07",
+      "description": "Comfy kids polo shirt in cotton pique fabric. Vibrant colors and soft cuffs.",
+      "available_sizes": ["s", "m", "xl"],
+      "image": "#",
+      "in_stock": true,
+      "tags": ["cotton", "kids", "polo"]
+    },
+    {
+      "id": 8,
+      "title": "Infant Cotton Romper",
+      "main_category": "infant",
+      "subcategory": "romper",
+      "brand": "Little Ones",
+      "size": {"m": 10, "s": 10},
+      "price": 50,
+      "sell_price": 40,
+      "quantity": 20,
+      "color": {"yellow": 10, "pink": 10},
+      "sku": "inf-romp-08",
+      "description": "Organic cotton infant romper with snap-button bottom for easy diaper changes.",
+      "available_sizes": ["s", "m"],
+      "image": "#",
+      "in_stock": true,
+      "tags": ["organic", "infant", "soft"]
     }
   ]
 }

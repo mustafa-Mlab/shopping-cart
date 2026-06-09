@@ -2,57 +2,226 @@ import React, { useState } from 'react';
 import './ProductList.scss';
 
 function ProductList({ products, searchQuery, onAddToCart, navigate }) {
-  const [selectedCategory, setSelectedCategory] = useState('all');
-  const [priceRange, setPriceRange] = useState(3000); // Max price in products.json is 3000
+  // States for all the filters
+  const [selectedMainCat, setSelectedMainCat] = useState('all');
+  const [selectedSubs, setSelectedSubs] = useState([]);
+  const [selectedBrands, setSelectedBrands] = useState([]);
+  const [selectedSizes, setSelectedSizes] = useState([]);
+  const [selectedColors, setSelectedColors] = useState([]);
+  const [selectedTags, setSelectedTags] = useState([]);
+  const [priceRange, setPriceRange] = useState(3000);
 
-  // Categories extraction
-  const categories = ['all', 'jeans', 't-shirts', 'traditional'];
+  // Main Categories List
+  const mainCategories = ['all', 'man', 'women', 'children', 'infant', 'others'];
 
-  // Filter products
+  // Extract subcategories dynamically based on the active main category
+  const subcategories = Array.from(
+    new Set(
+      products
+        .filter((p) => selectedMainCat === 'all' || p.main_category === selectedMainCat)
+        .map((p) => p.subcategory)
+    )
+  );
+
+  // Extract unique brands, colors, tags dynamically from all products for complete filters
+  const allBrands = Array.from(new Set(products.map((p) => p.brand)));
+  const allColors = Array.from(new Set(products.flatMap((p) => Object.keys(p.color))));
+  const allSizes = Array.from(new Set(products.flatMap((p) => p.available_sizes || [])));
+  const allTags = Array.from(new Set(products.flatMap((p) => p.tags || [])));
+
+  // Toggle Selection Helper functions
+  const toggleFilter = (list, setList, item) => {
+    if (list.includes(item)) {
+      setList(list.filter((x) => x !== item));
+    } else {
+      setList([...list, item]);
+    }
+  };
+
+  const handleClearFilters = () => {
+    setSelectedSubs([]);
+    setSelectedBrands([]);
+    setSelectedSizes([]);
+    setSelectedColors([]);
+    setSelectedTags([]);
+    setPriceRange(3000);
+  };
+
+  // Filtration logic
   const filteredProducts = products.filter((product) => {
-    const matchesCategory = selectedCategory === 'all' || product.category === selectedCategory;
-    const matchesSearch = product.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                          product.description.toLowerCase().includes(searchQuery.toLowerCase());
+    // 1. Search Query
+    const matchesSearch =
+      product.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      product.description.toLowerCase().includes(searchQuery.toLowerCase());
+
+    // 2. Main Category
+    const matchesMainCat = selectedMainCat === 'all' || product.main_category === selectedMainCat;
+
+    // 3. Subcategories
+    const matchesSub = selectedSubs.length === 0 || selectedSubs.includes(product.subcategory);
+
+    // 4. Brands
+    const matchesBrand = selectedBrands.length === 0 || selectedBrands.includes(product.brand);
+
+    // 5. Sizes (checks if product supports at least one selected size)
+    const matchesSize =
+      selectedSizes.length === 0 ||
+      (product.available_sizes && product.available_sizes.some((sz) => selectedSizes.includes(sz)));
+
+    // 6. Colors (checks if product supports at least one selected color)
+    const matchesColor =
+      selectedColors.length === 0 ||
+      (product.color && Object.keys(product.color).some((col) => selectedColors.includes(col)));
+
+    // 7. Tags (checks if product has at least one selected tag)
+    const matchesTag =
+      selectedTags.length === 0 ||
+      (product.tags && product.tags.some((tag) => selectedTags.includes(tag)));
+
+    // 8. Price
     const matchesPrice = product.sell_price <= priceRange;
-    return matchesCategory && matchesSearch && matchesPrice;
+
+    return (
+      matchesSearch &&
+      matchesMainCat &&
+      matchesSub &&
+      matchesBrand &&
+      matchesSize &&
+      matchesColor &&
+      matchesTag &&
+      matchesPrice
+    );
   });
 
   return (
     <div className="product-list-page container">
+      {/* Top Main Category Tabs */}
+      <nav className="main-cat-nav glass-effect">
+        {mainCategories.map((cat) => (
+          <button
+            key={cat}
+            className={`main-cat-btn ${selectedMainCat === cat ? 'active' : ''}`}
+            onClick={() => {
+              setSelectedMainCat(cat);
+              setSelectedSubs([]); // Reset subcategory filters on main category change
+            }}
+          >
+            {cat === 'all' ? 'All Collection' : cat.charAt(0).toUpperCase() + cat.slice(1)}
+          </button>
+        ))}
+      </nav>
+
       <div className="shop-layout">
-        {/* Filters Sidebar */}
+        {/* Advanced Filters Sidebar */}
         <aside className="filters-sidebar glass-effect">
-          <h3 className="filter-title">Filters</h3>
-          
-          <div className="filter-group">
-            <h4>Category</h4>
-            <ul className="category-list">
-              {categories.map((cat) => (
-                <li
-                  key={cat}
-                  className={selectedCategory === cat ? 'active' : ''}
-                  onClick={() => setSelectedCategory(cat)}
-                >
-                  {cat.charAt(0).toUpperCase() + cat.slice(1)}
-                </li>
-              ))}
-            </ul>
+          <div className="filter-header">
+            <h3>Filters</h3>
+            <button className="btn-clear-filters" onClick={handleClearFilters}>
+              Clear All
+            </button>
           </div>
 
+          <div className="filter-divider"></div>
+
+          {/* Subcategories checklist */}
+          {subcategories.length > 0 && (
+            <div className="filter-group">
+              <h4>Subcategories</h4>
+              <div className="checkbox-list">
+                {subcategories.map((sub) => (
+                  <label key={sub} className="checkbox-label">
+                    <input
+                      type="checkbox"
+                      checked={selectedSubs.includes(sub)}
+                      onChange={() => toggleFilter(selectedSubs, setSelectedSubs, sub)}
+                    />
+                    <span>{sub.charAt(0).toUpperCase() + sub.slice(1)}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Brand Checklist */}
+          <div className="filter-group">
+            <h4>Brands</h4>
+            <div className="checkbox-list">
+              {allBrands.map((brand) => (
+                <label key={brand} className="checkbox-label">
+                  <input
+                    type="checkbox"
+                    checked={selectedBrands.includes(brand)}
+                    onChange={() => toggleFilter(selectedBrands, setSelectedBrands, brand)}
+                  />
+                  <span>{brand}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+
+          {/* Size Filter Pills */}
+          <div className="filter-group">
+            <h4>Sizes</h4>
+            <div className="size-filter-row">
+              {allSizes.map((sz) => (
+                <button
+                  key={sz}
+                  className={`size-filter-btn ${selectedSizes.includes(sz) ? 'active' : ''}`}
+                  onClick={() => toggleFilter(selectedSizes, setSelectedSizes, sz)}
+                >
+                  {sz.toUpperCase()}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Color Circle Filters */}
+          <div className="filter-group">
+            <h4>Colors</h4>
+            <div className="color-filter-row">
+              {allColors.map((col) => (
+                <button
+                  key={col}
+                  className={`color-filter-btn ${selectedColors.includes(col) ? 'active' : ''}`}
+                  style={{ backgroundColor: col.includes('-') ? '#3b82f6' : col }}
+                  title={col}
+                  onClick={() => toggleFilter(selectedColors, setSelectedColors, col)}
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* Tag Pills */}
+          <div className="filter-group">
+            <h4>Tags</h4>
+            <div className="tag-filter-row">
+              {allTags.map((tag) => (
+                <button
+                  key={tag}
+                  className={`tag-filter-btn ${selectedTags.includes(tag) ? 'active' : ''}`}
+                  onClick={() => toggleFilter(selectedTags, setSelectedTags, tag)}
+                >
+                  #{tag}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Price Range Slider */}
           <div className="filter-group">
             <h4>Max Price</h4>
             <div className="price-slider-container">
               <input
                 type="range"
-                min="50"
+                min="40"
                 max="3000"
-                step="50"
+                step="20"
                 value={priceRange}
                 onChange={(e) => setPriceRange(parseInt(e.target.value))}
                 className="price-slider"
               />
               <div className="price-values">
-                <span>$50</span>
+                <span>$40</span>
                 <span className="current-price">${priceRange}</span>
                 <span>$3000</span>
               </div>
@@ -70,17 +239,18 @@ function ProductList({ products, searchQuery, onAddToCart, navigate }) {
           {filteredProducts.length === 0 ? (
             <div className="no-products glass-effect">
               <h3>No products found</h3>
-              <p>Try clearing your filters or search terms.</p>
+              <p>Try clearing some filters or tags to find items.</p>
             </div>
           ) : (
             <div className="product-grid">
               {filteredProducts.map((product) => {
-                const discountPercent = Math.round(((product.price - product.sell_price) / product.price) * 100);
+                const discountPercent = Math.round(
+                  ((product.price - product.sell_price) / product.price) * 100
+                );
 
                 return (
                   <div key={product.id} className="product-card glass-effect hover-lift">
                     <div className="product-card-image" onClick={() => navigate(`product/${product.id}`)}>
-                      {/* Placeholder Image container since user requested no images */}
                       <div className="image-placeholder">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="placeholder-icon">
                           <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
@@ -88,21 +258,21 @@ function ProductList({ products, searchQuery, onAddToCart, navigate }) {
                         </svg>
                         <span className="placeholder-label">{product.title}</span>
                       </div>
-                      
+
                       {discountPercent > 0 && (
                         <span className="badge-discount">-{discountPercent}%</span>
                       )}
                     </div>
 
                     <div className="product-card-content">
-                      <span className="product-category">{product.category.toUpperCase()}</span>
+                      <span className="product-category">{product.subcategory.toUpperCase()}</span>
                       <h3 className="product-title" onClick={() => navigate(`product/${product.id}`)}>
                         {product.title}
                       </h3>
-                      
+
                       <div className="product-rating">
-                        {"★".repeat(4)}{"☆".repeat(1)} 
-                        <span className="rating-count">(12)</span>
+                        {"★".repeat(4)}{"☆".repeat(1)}
+                        <span className="rating-count">(15)</span>
                       </div>
 
                       <div className="product-price-row">
@@ -123,7 +293,14 @@ function ProductList({ products, searchQuery, onAddToCart, navigate }) {
                         </button>
                         <button
                           className="btn-add-to-cart btn-primary"
-                          onClick={() => onAddToCart(product, 1, product.available_sizes[0], Object.keys(product.color)[0])}
+                          onClick={() =>
+                            onAddToCart(
+                              product,
+                              1,
+                              product.available_sizes[0],
+                              Object.keys(product.color)[0]
+                            )
+                          }
                         >
                           Add to Cart
                         </button>

@@ -27,9 +27,6 @@ function Header({ cart, user, currentRoute, navigate, searchProducts }) {
 
         <nav className="nav-section">
           <ul className="nav-links">
-            <li className={currentRoute === 'home' ? 'active' : ''}>
-              <a href="#/" onClick={(e) => { e.preventDefault(); navigate('home'); }}>Shop</a>
-            </li>
             {user && (
               <li className={currentRoute === 'orders' ? 'active' : ''}>
                 <a href="#/orders" onClick={(e) => { e.preventDefault(); navigate('orders'); }}>Orders</a>

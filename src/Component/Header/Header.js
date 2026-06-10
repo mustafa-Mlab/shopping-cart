@@ -20,7 +20,7 @@ function Header({ cart, user, navigate, searchProducts, onLogout }) {
     <header className="site-header glass-effect">
       <div className="container header-container">
         <div className="logo-section" onClick={() => navigate('home')}>
-          <img src="/sc-logo.jpg" alt="Logo" className="logo-img" />
+          <img src="/sc-logo.jpg" alt="Logo" className="logo-img" width="44" height="44" />
           <span className="logo-text">MegaShop</span>
         </div>
 

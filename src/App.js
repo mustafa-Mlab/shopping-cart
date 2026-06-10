@@ -61,40 +61,116 @@ class App extends Component {
       path = path.slice(0, -1);
     }
     
+    let currentRoute = 'home';
+    let routeParams = {};
+
     // Simple Router Matching
     if (path === '') {
-      this.setState({ currentRoute: 'home', routeParams: {} });
+      currentRoute = 'home';
+      routeParams = {};
     } else if (path.startsWith('product/')) {
       const slug = path.replace('product/', '');
-      this.setState({ currentRoute: 'product', routeParams: { slug } });
+      currentRoute = 'product';
+      routeParams = { slug };
     } else if (path.startsWith('category/')) {
       const category = path.replace('category/', '');
-      this.setState({ currentRoute: 'home', routeParams: { category } });
+      currentRoute = 'home';
+      routeParams = { category };
     } else if (path === 'cart') {
-      this.setState({ currentRoute: 'cart', routeParams: {} });
+      currentRoute = 'cart';
+      routeParams = {};
     } else if (path === 'checkout') {
-      this.setState({ currentRoute: 'checkout', routeParams: {} });
+      currentRoute = 'checkout';
+      routeParams = {};
     } else if (path.startsWith('thankyou/')) {
       const orderId = path.replace('thankyou/', '');
-      this.setState({ currentRoute: 'thankyou', routeParams: { orderId } });
+      currentRoute = 'thankyou';
+      routeParams = { orderId };
     } else if (path === 'login') {
-      this.setState({ currentRoute: 'login', routeParams: {} });
+      currentRoute = 'login';
+      routeParams = {};
     } else if (path === 'account') {
-      this.setState({ currentRoute: 'account', routeParams: {} });
+      currentRoute = 'account';
+      routeParams = {};
     } else if (path === 'reviews') {
-      this.setState({ currentRoute: 'reviews', routeParams: {} });
+      currentRoute = 'reviews';
+      routeParams = {};
     } else if (path.startsWith('track/')) {
       const orderId = path.replace('track/', '');
-      this.setState({ currentRoute: 'track', routeParams: { orderId } });
+      currentRoute = 'track';
+      routeParams = { orderId };
     } else if (path === 'track') {
-      this.setState({ currentRoute: 'track', routeParams: {} });
+      currentRoute = 'track';
+      routeParams = {};
     } else {
       // Fallback
-      this.setState({ currentRoute: 'home', routeParams: {} });
+      currentRoute = 'home';
+      routeParams = {};
     }
+
+    this.setState({ currentRoute, routeParams });
+    this.updateMetaTags(currentRoute, routeParams);
 
     // Scroll to top on navigation
     window.scrollTo(0, 0);
+  };
+
+  updateMetaTags = (route, params) => {
+    let title = 'MegaShop | Premium Online Shopping Mall';
+    let description = 'Discover premium clothing, toys, accessories and home goods at MegaShop. Experience smooth and fast online shopping with secure checkout.';
+
+    switch (route) {
+      case 'home':
+        if (params.category && params.category !== 'all') {
+          const catName = params.category.charAt(0).toUpperCase() + params.category.slice(1);
+          title = `${catName} Collection - MegaShop`;
+          description = `Browse our exclusive collection of ${params.category} products at MegaShop. Shop premium items with quick checkout.`;
+        }
+        break;
+      case 'product':
+        const product = ProductData.data.find((p) => getProductSlug(p) === params.slug);
+        if (product) {
+          title = `Buy ${product.title} - MegaShop`;
+          description = product.description || `Buy ${product.title} at MegaShop. Premium quality brand ${product.brand || ''} at $${product.sell_price || product.price}.`;
+        }
+        break;
+      case 'cart':
+        title = 'Your Shopping Cart - MegaShop';
+        description = 'View the items in your shopping cart. Add more items or proceed to checkout to complete your purchase.';
+        break;
+      case 'checkout':
+        title = 'Secure Checkout - MegaShop';
+        description = 'Complete your purchase securely. Enter your billing and shipping details to place your order.';
+        break;
+      case 'thankyou':
+        title = 'Order Confirmed - MegaShop';
+        description = `Thank you for your purchase! Your order ${params.orderId ? params.orderId : ''} is being processed.`;
+        break;
+      case 'login':
+        title = 'Login - MegaShop';
+        description = 'Access your account to view your past orders, manage addresses and track current shipments.';
+        break;
+      case 'account':
+        title = 'My Account - MegaShop';
+        description = 'Manage your personal profile, check order status, view tracking numbers, and review items.';
+        break;
+      case 'reviews':
+        title = 'Customer Reviews Dashboard - MegaShop';
+        description = 'Read what other customers say about our premium products and write your own review feedback.';
+        break;
+      case 'track':
+        title = 'Track Your Order - MegaShop';
+        description = `Real-time package tracker. Enter your order ID ${params.orderId ? params.orderId : ''} to check delivery progress.`;
+        break;
+      default:
+        break;
+    }
+
+    document.title = title;
+    const metaDescription = document.querySelector('meta[name="description"]');
+    if (metaDescription) {
+      metaDescription.setAttribute('content', description);
+    }
   };
 
   navigate = (path) => {
@@ -422,8 +498,11 @@ class App extends Component {
 
         <footer className="glass-effect" style={{ marginTop: 'auto', borderTop: '1px solid rgba(255, 255, 255, 0.2)', padding: '24px 0', textAlign: 'center' }}>
           <div className="container">
-            <p style={{ fontWeight: 600, color: 'hsl(var(--text-muted))', fontSize: '0.9rem' }}>
-              &copy; {new Date().getFullYear()} MegaShop. All rights reserved. Built with premium custom designs.
+            <p style={{ fontWeight: 600, color: 'hsl(var(--text-muted))', fontSize: '0.9rem', margin: 0 }}>
+              &copy; {new Date().getFullYear()} MegaShop. All rights reserved.
+            </p>
+            <p style={{ fontWeight: 600, color: 'hsl(var(--text-muted))', fontSize: '0.85rem', marginTop: '8px', marginBottom: 0 }}>
+              Designed &amp; Developed by <a href="http://mkamalhossain.com/" target="_blank" rel="noopener noreferrer" className="portfolio-link">M. Kamal Hossain</a>
             </p>
           </div>
         </footer>
